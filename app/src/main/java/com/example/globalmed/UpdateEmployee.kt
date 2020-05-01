@@ -1,9 +1,12 @@
 package com.example.globalmed
 
 import android.app.Activity
+import android.app.AlertDialog
 import android.app.DatePickerDialog
 import android.content.Intent
 import android.os.Bundle
+import android.view.Menu
+import android.view.MenuItem
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import kotlinx.android.synthetic.main.activity_add.*
@@ -102,5 +105,37 @@ class UpdateEmployeeActivity: AppCompatActivity() {
             val sdf = SimpleDateFormat("d MMM, yyyy", Locale.getDefault())
             sdf.format(dobInMilis)
         } ?: "Not Found"
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.menu_item, menu)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when(item.itemId){
+            R.id.action_delete ->{
+                val builder = AlertDialog.Builder(this)
+                builder.setMessage(R.string.confirm_sure)
+                    .setPositiveButton(R.string.yes){
+                        dialog,
+                        eId ->
+                        val result = DataManager.deleteEmployee(databaseHelper, empId.toString())
+                        Toast.makeText(applicationContext, "$result deleted", Toast.LENGTH_LONG).show()
+                        setResult(Activity.RESULT_OK, Intent())
+                        finish()
+                    }
+                    .setNegativeButton(R.string.no){
+                        dialog,
+                            id -> dialog.dismiss()
+                    }
+                val dialog = builder.create()
+                dialog.setTitle("Confirm Deletion?")
+                dialog.show()
+
+                true
+            }
+            else -> return  onOptionsItemSelected(item)
+        }
     }
 }
