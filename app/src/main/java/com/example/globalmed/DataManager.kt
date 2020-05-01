@@ -102,4 +102,9 @@ object DataManager {
         return db.delete(EmployeeEntry.TABLE_NAME, selection, selectionArgs)
 
     }
+
+    fun deleteAllEmployee(databaseHelper: DatabaseHelper): Any {
+        val db = databaseHelper.writableDatabase
+        return db.delete(EmployeeEntry.TABLE_NAME, "1", null)
+    }
 }
